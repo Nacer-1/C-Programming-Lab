@@ -1,0 +1,109 @@
+#include <stdio.h>
+#include <string.h>
+
+int main(void) {
+
+    int birth_year, surgery, sick_leave, screening;
+    int max_covered = 0, final_premium = 0;
+    int level1 = 1500, level2 = 1800, level3 = 2000, choice = 0;
+    float height, weight, budget, bmi;
+    int age;
+    const int current_year = 2026;
+    char name[50];
+    const char *risk;
+
+    printf("Enter client name: ");
+    scanf(" %49[^\n]", name);
+
+    printf("Year of birth: ");
+    scanf("%d", &birth_year);
+
+    printf("Height (cm): ");
+    scanf("%f", &height);
+
+    printf("Weight (kg): ");
+    scanf("%f", &weight);
+
+    printf("\nSurgery in the last 10 years (1 if yes, 0 if no): ");
+    scanf("%d", &surgery);
+
+    while (surgery != 0 && surgery != 1) {
+        printf("Error (1 if yes, 0 if no) please: ");
+        scanf("%d", &surgery);
+    }
+
+    printf("Sick leave of more than one month in the last 5 years (1 if yes, 0 if no): ");
+    scanf("%d", &sick_leave);
+
+    while (sick_leave != 0 && sick_leave != 1) {
+        printf("Error (1 if yes, 0 if no) please: ");
+        scanf("%d", &sick_leave);
+    }
+
+    printf("Viral serology screening (0 none, 1 HAV [hepatitis A], 2 HBV [hepatitis B], 3 HCV [hepatitis C], 4 HIV [AIDS]): ");
+    scanf("%d", &screening);
+
+    while (screening < 0 || screening > 4) {
+        printf("\nError (0 none, 1 HAV [hepatitis A], 2 HBV [hepatitis B], 3 HCV [hepatitis C], 4 HIV [AIDS]) please: ");
+        scanf("%d", &screening);
+    }
+
+    printf("Maximum budget (DT): ");
+    scanf("%f", &budget);
+
+    bmi = weight / ((height / 100) * (height / 100));
+    age = current_year - birth_year;
+    final_premium = 0;
+
+    if (surgery == 1 && sick_leave == 1 && screening >= 2) {
+        risk = "high risk client";
+    }
+    else if ((age > 50 && screening == 1 && bmi > 30) || bmi < 16.5) {
+        risk = "medium risk client";
+    }
+    else {
+        risk = "low risk client";
+    }
+
+    if (strcmp(risk, "high risk client") == 0) {
+        printf("Membership request rejected.\n");
+    }
+    else if (strcmp(risk, "medium risk client") == 0) {
+        final_premium = level2 + level2 * 15 / 100;
+        max_covered = 3500;
+    }
+    else {
+        final_premium = level1;
+        max_covered = 3000;
+    }
+
+    printf("Name: %s\n", name);
+    printf("Year of birth: %d\n", birth_year);
+    printf("Height: %.0f cm\n", height);
+    printf("Weight: %.1f kg\n", weight);
+    printf("Medical history:\n");
+    printf("Surgery in the last 10 years (1 if yes, 0 if no): %d\n", surgery);
+    printf("Sick leave of more than one month in the last 5 years (1 if yes, 0 if no): %d\n", sick_leave);
+    printf("Viral serology screening (0 none, 1 HAV [hepatitis A], 2 HBV [hepatitis B], 3 HCV [hepatitis C], 4 HIV [AIDS]): %d\n", screening);
+    printf("Maximum budget: %.2f DT\n\n\n\n", budget);
+
+    switch (max_covered) {
+    case 3500:
+        printf("Available coverage levels:\n");
+        printf("Level 1: max reimbursed = 3000 DT per year per provider, total premium = 1725 DT\n");
+        printf("Level 2: max reimbursed = 3500 DT per year per provider, total premium = 2070 DT\n");
+
+        printf("Please choose the desired coverage level:\n");
+        scanf("%d", &choice);
+
+        while (choice != 1 && choice != 2) {
+            printf("Level 1 or level 2:\n");
+            scanf("%d", &choice);
+        }
+        if (choice == 1) {
+            printf("Level 1: reimbursement limits:\n");
+            printf("Consultations: 20 DT / visit\n");
+            printf("Medication: 400 DT\n");
+            printf("Lab tests: 150 DT\n");
+            printf("Radiology: 180 DT\n");
+            printf("Surgery:
