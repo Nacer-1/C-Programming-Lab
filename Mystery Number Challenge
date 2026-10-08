@@ -1,0 +1,118 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int main(void) {
+
+    int choice, i, guess, secret_num, secret_char_code;
+    char guess_char;
+
+    srand(time(NULL));
+
+    printf("-------- Welcome to the Mystery Game --------\n");
+    printf("-------- Please choose a level --------\n\n");
+
+    do {
+        do {
+            printf("1: Easy level.\n");
+            printf("2: Medium level.\n");
+            printf("3: Hard level.\n");
+            printf("0: Quit.\n");
+            if (scanf("%d", &choice) != 1) {
+                while (getchar() != '\n');   // flush bad input
+                choice = -1;
+            }
+        } while (choice > 3 || choice < 0);
+
+        switch (choice) {
+            case 1: printf("You chose Easy level\n"); break;
+            case 2: printf("You chose Medium level\n"); break;
+            case 3: printf("You chose Hard level\n"); break;
+            case 0: printf("Quitting...\n"); break;
+        }
+
+        if (choice == 1) {
+
+            i = 15;
+            secret_num = rand() % 101;
+
+            while (i > 0) {
+                printf("Enter the mystery number between 0 and 100: ");
+                scanf("%d", &guess);
+                if (guess == secret_num) {
+                    printf("Congratulations! You won in %d attempts\n", 15 - i + 1);
+                    break;
+                } else {
+                    i--;
+                    printf("%d attempts left\n", i);
+                }
+            }
+            if (i == 0) {
+                printf("You lost! The number was %d\n", secret_num);
+            }
+
+        } else if (choice == 2) {
+
+            i = 10;
+            secret_num = rand() % 1001;
+
+            while (i > 0) {
+                printf("Enter the mystery number between 0 and 1000: ");
+                scanf("%d", &guess);
+                if (guess == secret_num) {
+                    printf("Congratulations! You won in %d attempts\n", 10 - i + 1);
+                    break;
+                } else {
+                    i--;
+                    printf("%d attempts left\n", i);
+                }
+            }
+            if (i == 0) {
+                printf("You lost! The number was %d\n", secret_num);
+            }
+
+        } else if (choice == 3) {
+
+            i = 10;
+            secret_num = rand() % (100 - 10 + 1) + 10;
+            secret_char_code = rand() % (90 - 65 + 1) + 65;   // ASCII 'A'..'Z'
+
+            while (i > 0) {
+                printf("Enter the mystery number between 10 and 100:\n");
+                scanf("%d", &guess);
+                printf("Enter the mystery letter between A and Z:\n");
+                scanf(" %c", &guess_char);
+
+                if (guess == secret_num && secret_char_code == guess_char) {
+                    printf("Congratulations! You won in %d attempts\n", 10 - i + 1);
+                    break;
+                } else {
+                    i--;
+                    if (secret_num > guess) {
+                        printf("Higher for the number\t");
+                    } else if (secret_num < guess) {
+                        printf("Lower for the number\t");
+                    } else {
+                        printf("The number is correct: *%d\t", guess);
+                    }
+
+                    if (secret_char_code > guess_char) {
+                        printf("The letter comes after\n");
+                    } else if (secret_char_code < guess_char) {
+                        printf("The letter comes before\n");
+                    } else {
+                        printf("The letter is correct\n");
+                    }
+                    printf("You have %d attempts left\n", i);
+                }
+            }
+            if (i == 0) {
+                printf("You lost! The number was %d and the letter was %c\n",
+                       secret_num, secret_char_code);
+            }
+        }
+
+    } while (choice != 0);
+
+    return 0;
+}
