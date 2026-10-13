@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+#define SIZE 10
+
+int main()
+{
+    int rotations, i, k, last;
+    int arr[SIZE];
+
+    srand(time(NULL));
+
+    for (i = 0; i < SIZE; i++)
+        arr[i] = rand() % 10;
+
+    printf("Array before rotation: ");
+    for (i = 0; i < SIZE; i++)
+        printf("| %d ", arr[i]);
+    printf("|\n");
+
+    do {
+        printf("Enter the number of rotations: ");
+        scanf("%d", &rotations);
+    } while (rotations < 0);
+
+    rotations = rotations % SIZE;   /* a full turn changes nothing */
+
+    for (k = 0; k < rotations; k++) {
+        last = arr[SIZE - 1];
+        for (i = SIZE - 1; i > 0; i--)
+            arr[i] = arr[i - 1];
+        arr[0] = last;
+    }
+
+    printf("Array after rotation: ");
+    for (i = 0; i < SIZE; i++)
+        printf("| %d ", arr[i]);
+    printf("|\n");
+
+    return 0;
+}
