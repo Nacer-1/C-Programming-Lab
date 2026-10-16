@@ -1,0 +1,126 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+
+int main()
+{
+    int n, i, choice, idx, minIdx = 0, maxIdx = 0;
+    float newTemp, newHum, maxHum, minHum, sumHum, sumTemp, mean, sumSq, stdDev;
+
+    do {
+        printf("Enter n (1-15): ");
+        scanf("%d", &n);
+    } while (n <= 0 || n > 15);
+
+    float temperature[n], humidity[n];
+
+    for (i = 0; i < n; i++) {
+        printf("Enter temperature[%d]: ", i + 1);
+        scanf("%f", &temperature[i]);
+    }
+
+    for (i = 0; i < n; i++) {
+        printf("Enter humidity[%d]: ", i + 1);
+        scanf("%f", &humidity[i]);
+    }
+
+    printf("\n===== MENU =====\n");
+    printf("1: Display temperature measurements\n");
+    printf("2: Display humidity measurements\n");
+    printf("3: Modify the values of a sensor by its number\n");
+    printf("4: Display max and min humidity with their sensor numbers\n");
+    printf("5: Display average humidity and temperature\n");
+    printf("6: Display humidity standard deviation (detect irrigation faults)\n");
+    printf("0: Exit\n");
+
+    do {
+        do {
+            printf("\nEnter your choice: ");
+            scanf("%d", &choice);
+        } while (choice < 0 || choice > 6);
+
+        switch (choice) {
+            case 1:
+                for (i = 0; i < n; i++)
+                    printf("Temperature[%d]: %.2f\n", i + 1, temperature[i]);
+                break;
+
+            case 2:
+                for (i = 0; i < n; i++)
+                    printf("Humidity[%d]: %.2f\n", i + 1, humidity[i]);
+                break;
+
+            case 3:
+                do {
+                    printf("Enter the sensor number to modify (1-%d): ", n);
+                    scanf("%d", &idx);
+                } while (idx < 1 || idx > n);
+                idx--; /* convert to 0-based index */
+
+                printf("Enter the new temperature: ");
+                scanf("%f", &newTemp);
+                printf("Enter the new humidity: ");
+                scanf("%f", &newHum);
+
+                temperature[idx] = newTemp;
+                humidity[idx] = newHum;
+
+                printf("\nNew temperature values:\n");
+                for (i = 0; i < n; i++)
+                    printf("Temperature[%d]: %.2f\n", i + 1, temperature[i]);
+
+                printf("\nNew humidity values:\n");
+                for (i = 0; i < n; i++)
+                    printf("Humidity[%d]: %.2f\n", i + 1, humidity[i]);
+                break;
+
+            case 4:
+                maxHum = minHum = humidity[0];
+                maxIdx = minIdx = 0;
+                for (i = 1; i < n; i++) {
+                    if (humidity[i] > maxHum) {
+                        maxHum = humidity[i];
+                        maxIdx = i;
+                    }
+                    if (humidity[i] < minHum) {
+                        minHum = humidity[i];
+                        minIdx = i;
+                    }
+                }
+                printf("Max humidity: %.2f (sensor %d)\n", maxHum, maxIdx + 1);
+                printf("Min humidity: %.2f (sensor %d)\n", minHum, minIdx + 1);
+                break;
+
+            case 5:
+                sumHum = 0;
+                sumTemp = 0;
+                for (i = 0; i < n; i++) {
+                    sumHum += humidity[i];
+                    sumTemp += temperature[i];
+                }
+                printf("Average humidity: %.2f\n", sumHum / n);
+                printf("Average temperature: %.2f\n", sumTemp / n);
+                break;
+
+            case 6:
+                sumHum = 0;
+                for (i = 0; i < n; i++)
+                    sumHum += humidity[i];
+                mean = sumHum / n;
+
+                sumSq = 0;
+                for (i = 0; i < n; i++)
+                    sumSq += pow(humidity[i] - mean, 2);
+
+                stdDev = sqrt(sumSq / n);
+                printf("Humidity standard deviation: %.2f\n", stdDev);
+                break;
+
+            case 0:
+                printf("Goodbye!\n");
+                break;
+        }
+    } while (choice != 0);
+
+    return 0;
+}
