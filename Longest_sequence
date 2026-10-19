@@ -3,8 +3,8 @@
 int main()
 {
     int n, i, x;
-    int length = 0, best_length = 0;   /* current run / best run */
-    int start = 0, best_start = 0;     /* start index of current / best run */
+    int length = 0, best_length = 0;  
+    int start = 0, best_start = 0;     
     int T[100];
 
     do {
