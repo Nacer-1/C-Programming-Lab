@@ -106,17 +106,17 @@ int main(void) {
             printf("Medication: 400 DT\n");
             printf("Lab tests: 150 DT\n");
             printf("Radiology: 180 DT\n");
-            printf("Surgery: 1000 DT\n");               /* ASSUMED */
-            final_premium = level1 + level1 * 15 / 100; /* 1725 */
+            printf("Surgery: 1000 DT\n");               
+            final_premium = level1 + level1 * 15 / 100; 
         }
         else {
             printf("Level 2: reimbursement limits:\n");
-            printf("Consultations: 30 DT / visit\n");   /* ASSUMED */
-            printf("Medication: 600 DT\n");             /* ASSUMED */
-            printf("Lab tests: 250 DT\n");              /* ASSUMED */
-            printf("Radiology: 300 DT\n");              /* ASSUMED */
-            printf("Surgery: 1500 DT\n");               /* ASSUMED */
-            final_premium = level2 + level2 * 15 / 100; /* 2070 */
+            printf("Consultations: 30 DT / visit\n");  
+            printf("Medication: 600 DT\n");             
+            printf("Lab tests: 250 DT\n");              
+            printf("Radiology: 300 DT\n");              
+            printf("Surgery: 1500 DT\n");               
+            final_premium = level2 + level2 * 15 / 100; 
         }
         break;
 
@@ -139,25 +139,25 @@ int main(void) {
             printf("Medication: 400 DT\n");
             printf("Lab tests: 150 DT\n");
             printf("Radiology: 180 DT\n");
-            printf("Surgery: 1000 DT\n");               /* ASSUMED */
+            printf("Surgery: 1000 DT\n");               
             final_premium = level1;
         }
         else if (choice == 2) {
             printf("Level 2: reimbursement limits:\n");
-            printf("Consultations: 30 DT / visit\n");   /* ASSUMED */
-            printf("Medication: 600 DT\n");             /* ASSUMED */
-            printf("Lab tests: 250 DT\n");              /* ASSUMED */
-            printf("Radiology: 300 DT\n");              /* ASSUMED */
-            printf("Surgery: 1500 DT\n");               /* ASSUMED */
+            printf("Consultations: 30 DT / visit\n");   
+            printf("Medication: 600 DT\n");             
+            printf("Lab tests: 250 DT\n");              
+            printf("Radiology: 300 DT\n");             
+            printf("Surgery: 1500 DT\n");               
             final_premium = level2;
         }
         else {
             printf("Level 3: reimbursement limits:\n");
-            printf("Consultations: 40 DT / visit\n");   /* ASSUMED */
-            printf("Medication: 800 DT\n");             /* ASSUMED */
-            printf("Lab tests: 350 DT\n");              /* ASSUMED */
-            printf("Radiology: 450 DT\n");              /* ASSUMED */
-            printf("Surgery: 2000 DT\n");               /* ASSUMED */
+            printf("Consultations: 40 DT / visit\n");   
+            printf("Medication: 800 DT\n");            
+            printf("Lab tests: 350 DT\n");              
+            printf("Radiology: 450 DT\n");             
+            printf("Surgery: 2000 DT\n");               
             final_premium = level3;
         }
         break;
