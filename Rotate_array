@@ -24,7 +24,7 @@ int main()
         scanf("%d", &rotations);
     } while (rotations < 0);
 
-    rotations = rotations % SIZE;   /* a full turn changes nothing */
+    rotations = rotations % SIZE;   
 
     for (k = 0; k < rotations; k++) {
         last = arr[SIZE - 1];
