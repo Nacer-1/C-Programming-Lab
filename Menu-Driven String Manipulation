@@ -1,0 +1,103 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main()
+{
+    int choix,i,k,p,nb,j,s,juste;
+    int rep[7];
+    int correction[7]={3,2,5,1,7,4,6};
+    char ch1[100],ch2[100],mot[100];
+    char voyelle[]={'a','e','i','o','u','y','A','E','I','O','U','Y'};
+    char liste[7][20]={"sixieme","notre","pour","c'est","annee","prosit","cette"};
+
+    do{
+        do{
+            printf("\n*****************************************\n");
+            printf("1: Display the words of a sentence\n");
+            printf("2: Display the vowels and their count in a word\n");
+            printf("3: Build a sentence\n");
+            printf("0: Quit\n");
+            printf("*****************************************\n");
+            printf("Enter your choice: ");
+            scanf("%d",&choix);
+        }while(choix<0 || choix>3);
+
+        switch(choix){
+            case 1:
+                printf("Enter a sentence: ");
+                getchar();
+                fgets(ch1,100,stdin);
+                nb=0;
+                j=0;
+                for(i=0;i<=strlen(ch1);i++){
+                    if(ch1[i]==' ' || ch1[i]=='.' || ch1[i]=='\n' || ch1[i]=='\0'){
+                        if(j>0){
+                            mot[j]='\0';
+                            nb=nb+1;
+                            printf("word %d: %s\n",nb,mot);
+                            j=0;
+                        }
+                    }
+                    else{
+                        mot[j]=ch1[i];
+                        j=j+1;
+                    }
+                }
+                printf("Number of words: %d\n",nb);
+            break;
+
+            case 2:
+                printf("Enter a word: ");
+                getchar();
+                fgets(ch2,100,stdin);
+                ch2[strcspn(ch2,"\n")]='\0';
+                s=0;
+                printf("The list of vowels is: ");
+                for(i=0;ch2[i]!='\0';i++){
+                    for(k=0;k<12;k++){
+                        if(ch2[i]==voyelle[k]){
+                            printf("%c ",ch2[i]);
+                            s=s+1;
+                            break;
+                        }
+                    }
+                }
+                printf("\nThe number of vowels in %s is: %d\n",ch2,s);
+            break;
+
+            case 3:
+                juste=1;
+                printf("Here is the list of words: ");
+                for(i=0;i<7;i++){
+                    printf("\"%s\" ",liste[i]);
+                }
+                printf("\n");
+                for(i=0;i<7;i++){
+                    printf("Enter the position of the word \"%s\" in the sentence: ",liste[i]);
+                    scanf("%d",&rep[i]);
+                    if(rep[i]!=correction[i]){
+                        juste=0;
+                    }
+                }
+                printf("\nThe sentence you built is: ");
+                for(p=1;p<=7;p++){
+                    for(i=0;i<7;i++){
+                        if(rep[i]==p){
+                            printf("%s ",liste[i]);
+                        }
+                    }
+                }
+                printf("\n");
+                if(juste==1){
+                    printf("Well done, that is the right answer\n");
+                }
+                else{
+                    printf("That is not the right answer\n");
+                }
+            break;
+        }
+    }while(choix!=0);
+
+    return 0;
+}
