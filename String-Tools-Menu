@@ -1,103 +1,131 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
-int main()
+/* Safe replacement for gets(): reads a line and strips the newline */
+static void read_line(char *buf, size_t size)
 {
-    int choix,i,k,p,nb,j,s,juste;
-    int rep[7];
-    int correction[7]={3,2,5,1,7,4,6};
-    char ch1[100],ch2[100],mot[100];
-    char voyelle[]={'a','e','i','o','u','y','A','E','I','O','U','Y'};
-    char liste[7][20]={"sixieme","notre","pour","c'est","annee","prosit","cette"};
+    if (fgets(buf, (int)size, stdin) == NULL) {
+        buf[0] = '\0';
+        return;
+    }
+    buf[strcspn(buf, "\n")] = '\0';
+}
 
-    do{
-        do{
-            printf("\n*****************************************\n");
-            printf("1: Display the words of a sentence\n");
-            printf("2: Display the vowels and their count in a word\n");
-            printf("3: Build a sentence\n");
-            printf("0: Quit\n");
-            printf("*****************************************\n");
-            printf("Enter your choice: ");
-            scanf("%d",&choix);
-        }while(choix<0 || choix>3);
+/* Reads an integer safely (no infinite loop on bad input) */
+static int read_int(void)
+{
+    char line[32];
+    int n;
+    read_line(line, sizeof line);
+    if (sscanf(line, "%d", &n) != 1) return -1;
+    return n;
+}
 
-        switch(choix){
-            case 1:
-                printf("Enter a sentence: ");
-                getchar();
-                fgets(ch1,100,stdin);
-                nb=0;
-                j=0;
-                for(i=0;i<=strlen(ch1);i++){
-                    if(ch1[i]==' ' || ch1[i]=='.' || ch1[i]=='\n' || ch1[i]=='\0'){
-                        if(j>0){
-                            mot[j]='\0';
-                            nb=nb+1;
-                            printf("word %d: %s\n",nb,mot);
-                            j=0;
-                        }
-                    }
-                    else{
-                        mot[j]=ch1[i];
-                        j=j+1;
-                    }
+int main(void)
+{
+    int i, j, k, choice, count, s;
+    char sentence[100], word_in[100], word[100], vowel_list[200];
+    const char vowels[] = {'A','E','I','O','U','Y','a','e','i','o','u','y'};
+
+    do {
+        do {
+            printf("\n");
+            printf("**********Menu**********\n");
+            printf("[1]: Display the words of a sentence.\n");
+            printf("[2]: Display the vowels of a word and how many there are.\n");
+            printf("[3]: Build a sentence.\n");
+            printf("[0]: Quit...\n");
+            printf("************************\n\n");
+            choice = read_int();
+        } while (choice > 3 || choice < 0);
+
+        switch (choice) {
+        case 1:
+            printf("Enter a sentence: ");
+            read_line(sentence, sizeof sentence);
+            printf("\n");
+            s = 0;
+            j = 0;
+            for (i = 0; i <= (int)strlen(sentence); i++) {
+                if (sentence[i] != ' ' && sentence[i] != '\0' && sentence[i] != '.') {
+                    word[j++] = sentence[i];
+                } else if (j > 0) {
+                    word[j] = '\0';
+                    s++;
+                    printf("word %d: %s\n", s, word);
+                    j = 0;
                 }
-                printf("Number of words: %d\n",nb);
+            }
+            if (s == 0)
+                printf("This is not a sentence\n");
             break;
 
-            case 2:
-                printf("Enter a word: ");
-                getchar();
-                fgets(ch2,100,stdin);
-                ch2[strcspn(ch2,"\n")]='\0';
-                s=0;
-                printf("The list of vowels is: ");
-                for(i=0;ch2[i]!='\0';i++){
-                    for(k=0;k<12;k++){
-                        if(ch2[i]==voyelle[k]){
-                            printf("%c ",ch2[i]);
-                            s=s+1;
-                            break;
-                        }
+        case 2:
+            printf("Enter a word: ");
+            read_line(word_in, sizeof word_in);
+            printf("\n");
+            j = 0;
+            count = 0;
+            for (i = 0; i < (int)strlen(word_in); i++) {
+                for (k = 0; k < 12; k++) {
+                    if (word_in[i] == vowels[k]) {
+                        count++;
+                        vowel_list[j++] = word_in[i];
+                        vowel_list[j++] = ' ';
+                        break;
                     }
                 }
-                printf("\nThe number of vowels in %s is: %d\n",ch2,s);
+            }
+            vowel_list[j] = '\0';
+
+            if (count == 0)
+                printf("The word contains no vowels\n");
+
+            printf("\nVowel list: { %s }\n", vowel_list);
+            printf("Number of vowels in [ %s ]: %d\n\n", word_in, count);
             break;
 
-            case 3:
-                juste=1;
-                printf("Here is the list of words: ");
-                for(i=0;i<7;i++){
-                    printf("\"%s\" ",liste[i]);
-                }
-                printf("\n");
-                for(i=0;i<7;i++){
-                    printf("Enter the position of the word \"%s\" in the sentence: ",liste[i]);
-                    scanf("%d",&rep[i]);
-                    if(rep[i]!=correction[i]){
-                        juste=0;
-                    }
-                }
-                printf("\nThe sentence you built is: ");
-                for(p=1;p<=7;p++){
-                    for(i=0;i<7;i++){
-                        if(rep[i]==p){
-                            printf("%s ",liste[i]);
-                        }
-                    }
-                }
-                printf("\n");
-                if(juste==1){
-                    printf("Well done, that is the right answer\n");
-                }
-                else{
-                    printf("That is not the right answer\n");
-                }
+        case 3:
+        {
+            /* Correct sentence: "it's our sixth toast for this year" */
+            char words[7][20] = {"sixth", "our", "for", "it's", "year", "toast", "this"};
+            int correct[7] = {3, 2, 5, 1, 7, 4, 6};
+            int ord[7];
+            int ok = 1;
+
+            printf("Here are the words:\n");
+            for (i = 0; i < 7; i++)
+                printf("\"%s\" ", words[i]);
+            printf("\n");
+
+            for (i = 0; i < 7; i++) {
+                do {
+                    printf("Enter the position of the word \"%s\" in the sentence: ", words[i]);
+                    ord[i] = read_int();
+                } while (ord[i] < 1 || ord[i] > 7);
+
+                if (ord[i] != correct[i]) ok = 0;
+            }
+
+            if (ok) {
+                for (i = 1; i <= 7; i++) printf("%d\t", i);
+                printf("\nWell done, that's the right answer!\n");
+                printf("The sentence is: ");
+            } else {
+                printf("\nThe sentence ");
+            }
+
+            for (j = 1; j <= 7; j++)
+                for (i = 0; i < 7; i++)
+                    if (ord[i] == j)
+                        printf("%s ", words[i]);
+
+            if (!ok) printf("makes no sense");
+            printf("\n");
             break;
         }
-    }while(choix!=0);
+        }
+    } while (choice != 0);
 
     return 0;
 }
