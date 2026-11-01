@@ -1,0 +1,166 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+
+
+int main(){
+
+    int choice;
+
+    char name[50], PIN[10], enteredPIN[10];
+    int  accountNumber = 0, enteredNumber, attempts, loggedIn, choice2;
+    int  accountCreated = 0, blocked = 0;
+    float balance = 0, amount;
+
+    srand(time(NULL));
+
+    do{
+        do{
+
+            printf("\n");
+            printf("===============================");
+            printf(" BANK C - HOME ");
+            printf("===============================");
+            printf("\n");
+            printf("[1]. Create an account");
+            printf("\n");
+            printf("[2]. Log in");
+            printf("\n");
+            printf("[3]. Quit");
+            printf("\n");
+            printf("-------------------------------");
+            printf("\n");
+            printf("Your choice:");
+            scanf("%d", &choice);
+            printf("\n\n");
+        }while(choice>3 || choice<1);
+
+        switch (choice){
+
+            case 1:
+
+                printf("\n");
+                printf("-------------- Account Creation --------------");
+                printf("\n");
+
+                printf("Enter your name:");
+                scanf(" %49s", name);
+
+                printf("\n");
+
+                do{
+                    printf("Choose a PIN (4 digits):");
+                    scanf("%9s", PIN);
+                } while (strlen(PIN)!=4 );
+
+                printf("\n");
+
+                do{
+                    printf("Initial deposit:");
+                    scanf("%f", &balance);
+                } while ( balance<=0 );
+
+                printf("\n");
+
+                accountNumber = 1000 + rand() % 9000;
+                accountCreated = 1;
+                blocked = 0;
+                printf("Account created successfully!\n Your account number is [** %d **].", accountNumber);
+                break;
+
+            case 2:
+
+                if (!accountCreated){
+                    printf("No account yet. Create one first.");
+                    break;
+                }
+                if (blocked){
+                    printf("Account blocked.");
+                    break;
+                }
+
+                attempts = 1;
+                loggedIn = 0;
+
+                while (attempts<=3 && !loggedIn){
+
+                    printf("Enter the account number:");
+                    scanf("%d", &enteredNumber);
+
+                    printf("Enter the PIN:");
+                    scanf("%9s", enteredPIN);
+
+                    printf("\n");
+
+                    if (enteredNumber == accountNumber && strcmp(PIN, enteredPIN) == 0){
+                        loggedIn = 1;
+                    }else{
+                        printf("Invalid account number or PIN!!");
+                        printf("\n");
+                        printf("Attempt number [ %d ] of 3.\n", attempts);
+                        attempts=attempts+1;
+                    }
+                }
+
+                printf("\n");
+
+                if (!loggedIn){
+                    blocked = 1;
+                    printf("Account blocked after %d attempts.", 3);
+                }else{
+
+                    do{
+                        printf("\n");
+                        printf("==============================");
+                        printf("\n");
+                        printf(" ACCOUNT No.%d - %s ",accountNumber,name);
+                        printf("\n");
+                        printf("Balance: %.2f DT",balance);
+                        printf("\n");
+                        printf("==============================");
+                        printf("\n");
+                        printf("[1]. Withdraw");
+                        printf("\n");
+                        printf("[2]. Deposit");
+                        printf("\n");
+                        printf("[3]. Log out");
+                        printf("\n");
+                        printf("-------------------------------");
+                        printf("\n");
+                        printf("Your choice:");
+                        scanf("%d", &choice2);
+                        printf("\n");
+
+                        if (choice2 == 1){
+                            printf("\nAmount to withdraw:");
+                            scanf("%f", &amount);
+                            if (amount > 0 && amount <= balance){
+                                balance = balance - amount;
+                            }else{
+                                printf("Invalid amount or insufficient balance.");
+                            }
+                        }else if (choice2 == 2){
+                            printf("\nAmount to deposit:");
+                            scanf("%f", &amount);
+                            if (amount > 0){
+                                balance = balance + amount;
+                            }else{
+                                printf("Invalid amount.");
+                            }
+                        }
+                    }while (choice2 != 3);
+                }
+                break;
+
+            case 3:
+                printf("\n");
+                printf("Goodbye... :(");
+                break;
+        }
+
+
+    }while (choice!=3);
+
+    return 0;
+}
