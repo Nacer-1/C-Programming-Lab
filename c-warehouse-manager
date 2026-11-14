@@ -1,0 +1,382 @@
+#include <stdio.h>
+#include <string.h>
+
+typedef struct {
+    int id;
+    char city[50];
+    char product_type[50];
+    int shelf_count;
+    int products[200];
+    char manager_name[50];
+} warehouse;
+
+int main(){
+
+    warehouse arr[100];
+    warehouse new_wh;
+    int n = 0;
+    int choice, i, j, k, id, ok, threshold, max_total, imax, sum;
+    char type_in[50];
+    char city_in[50];
+
+    do{
+        do{
+            printf("=============================================\n");
+            printf("WAREHOUSE MANAGEMENT - MENU\n");
+            printf("=============================================\n");
+            printf("[1]. Add a new warehouse\n");
+            printf("[2]. Add products (first empty shelf)\n");
+            printf("[3]. List warehouses by product type\n");
+            printf("[4]. Warehouse with the most products\n");
+            printf("[5]. Change a warehouse's manager\n");
+            printf("[6]. Number of warehouses in a city\n");
+            printf("[7]. Warehouses where all shelves < threshold\n");
+            printf("[8]. Delete the first empty warehouse\n");
+            printf("[0]. Quit\n");
+            printf("---------------------------------------------\n");
+            scanf("%d", &choice);
+            printf("=============================================\n");
+
+            if(choice > 8 || choice < 0){
+                printf("Invalid choice !! \n ---> Please enter a valid choice.\n");
+            }
+        }while(choice > 8 || choice < 0);
+
+        switch(choice){
+
+            case 1:
+                printf("=============================================\n");
+                printf("=========| Add a new warehouse |=============\n");
+                printf("=============================================\n");
+
+                if(n >= 100){
+                    printf("Warehouse array is full !! \n");
+                    break;
+                }
+
+                do{
+                    printf("Enter the ID number: ");
+                    scanf("%d", &new_wh.id);
+
+                    ok = 1;
+                    if(new_wh.id <= 0){
+                        printf("Invalid ID !! \n");
+                        ok = 0;
+                    }else{
+                        for(i=0 ; i < n ; i++){
+                            if(arr[i].id == new_wh.id){
+                                printf("ID already used !! \n");
+                                ok = 0;
+                                break;
+                            }
+                        }
+                    }
+                }while(ok == 0);
+
+                printf("\n");
+
+                do{
+                    printf("Enter the city (Tunis, Sousse or Bizerte): ");
+                    scanf(" %s", new_wh.city);
+
+                    if(strcmp(new_wh.city,"Tunis")!=0 && strcmp(new_wh.city,"Sousse")!=0 && strcmp(new_wh.city,"Bizerte")!=0){
+                        printf("Invalid city !! \n");
+                    }
+                }while(strcmp(new_wh.city,"Tunis")!=0 && strcmp(new_wh.city,"Sousse")!=0 && strcmp(new_wh.city,"Bizerte")!=0);
+
+                printf("\n");
+
+                do{
+                    printf("Enter the product type (Clothing, Food, Spare parts): ");
+                    scanf(" %[^\n]", new_wh.product_type);
+
+                    if(strcmp(new_wh.product_type,"Clothing")!=0 && strcmp(new_wh.product_type,"Food")!=0 && strcmp(new_wh.product_type,"Spare parts")!=0){
+                        printf("Invalid product type !! \n");
+                    }
+                }while(strcmp(new_wh.product_type,"Clothing")!=0 && strcmp(new_wh.product_type,"Food")!=0 && strcmp(new_wh.product_type,"Spare parts")!=0);
+
+                printf("\n");
+
+                do{
+                    printf("Enter the number of shelves (MAX 200): ");
+                    scanf("%d", &new_wh.shelf_count);
+
+                    if(new_wh.shelf_count > 200){
+                        printf("Number of shelves > 200 !! \n");
+                    }else if(new_wh.shelf_count < 0){
+                        printf("Number of shelves < 0 !! \n");
+                    }
+                }while(new_wh.shelf_count > 200 || new_wh.shelf_count < 0);
+
+                printf("\n");
+
+                for(i=0 ; i < new_wh.shelf_count ; i++){
+                    new_wh.products[i] = 0;
+                }
+
+                do{
+                    printf("Enter the warehouse manager's name: ");
+                    scanf(" %s", new_wh.manager_name);
+
+                    ok = 1;
+                    for(j=0 ; new_wh.manager_name[j] != '\0' ; j++){
+                        if(new_wh.manager_name[j] >= '0' && new_wh.manager_name[j] <= '9'){
+                            printf("Invalid manager name !! \n");
+                            ok = 0;
+                            break;
+                        }
+                    }
+                }while(ok == 0);
+
+                printf("\n");
+
+                arr[n] = new_wh;
+                n++;
+
+                printf("Saved successfully...\n");
+                break;
+
+            case 2:
+                printf("=============================================\n");
+                printf("===========|  Add products  |================\n");
+                printf("=============================================\n");
+
+                printf("Enter the warehouse ID: ");
+                scanf("%d", &id);
+
+                k = -1;
+                for(i=0 ; i < n ; i++){
+                    if(arr[i].id == id){
+                        k = i;
+                        break;
+                    }
+                }
+
+                if(k == -1){
+                    printf("Warehouse not found.\n");
+                }else{
+                    for(i=0 ; i < arr[k].shelf_count && arr[k].products[i] != 0 ; i++);
+
+                    if(i == arr[k].shelf_count){
+                        printf("No empty shelf !! \n");
+                    }else{
+                        do{
+                            printf("Enter the number of products for shelf N°%d: ", i+1);
+                            scanf("%d", &arr[k].products[i]);
+
+                            if(arr[k].products[i] > 200 || arr[k].products[i] < 1){
+                                printf("The number of products must be between 1 and 200 !! \n");
+                            }
+                        }while(arr[k].products[i] > 200 || arr[k].products[i] < 1);
+
+                        printf("Products added successfully...\n");
+                    }
+                }
+
+                printf("\n");
+                break;
+
+            case 3:
+                printf("=============================================\n");
+                printf("=|  List warehouses by product type        |=\n");
+                printf("=============================================\n");
+
+                do{
+                    printf("Enter the product type: ");
+                    scanf(" %[^\n]", type_in);   /* fixed: %s stopped at the space in "Spare parts" */
+
+                    if(strcmp(type_in,"Clothing")!=0 && strcmp(type_in,"Food")!=0 && strcmp(type_in,"Spare parts")!=0){
+                        printf("Invalid product type !! \n");
+                    }
+                }while(strcmp(type_in,"Clothing")!=0 && strcmp(type_in,"Food")!=0 && strcmp(type_in,"Spare parts")!=0);
+
+                printf("\n");
+
+                ok = 0;
+                for(i=0 ; i < n ; i++){
+                    sum = 0;
+                    for(j=0 ; j < arr[i].shelf_count ; j++){
+                        sum = sum + arr[i].products[j];
+                    }
+
+                    if(strcmp(type_in, arr[i].product_type)==0 && sum > 0){
+                        printf("ID: %d\nCity: %s\nProduct type: %s\nNumber of shelves: %d\nProducts: ",
+                               arr[i].id, arr[i].city, arr[i].product_type, arr[i].shelf_count);
+                        for(j=0 ; j < arr[i].shelf_count ; j++){
+                            printf("%d ", arr[i].products[j]);
+                        }
+                        printf("\nManager: %s\n", arr[i].manager_name);
+                        printf("---------------------------------------------\n");
+                        ok = 1;
+                    }
+                }
+
+                if(ok == 0){
+                    printf("No warehouse containing products of this type.\n");
+                }
+
+                printf("\n");
+                break;
+
+            case 4:
+                printf("=============================================\n");
+                printf("=|  Warehouse with the most products       |=\n");
+                printf("=============================================\n");
+
+                if(n == 0){
+                    printf("No warehouse.\n");
+                }else{
+                    imax = 0;
+                    max_total = -1;
+                    for(i=0 ; i < n ; i++){
+                        sum = 0;
+                        for(j=0 ; j < arr[i].shelf_count ; j++){
+                            sum += arr[i].products[j];
+                        }
+                        if(sum > max_total){
+                            max_total = sum;
+                            imax = i;
+                        }
+                    }
+
+                    printf("Manager: %s\nCity: %s\n", arr[imax].manager_name, arr[imax].city);
+                    printf("Total products: %d\n", max_total);
+                }
+
+                printf("\n");
+                break;
+
+            case 5:
+                printf("=============================================\n");
+                printf("=|  Change a warehouse's manager           |=\n");
+                printf("=============================================\n");
+
+                printf("Enter the warehouse ID: ");
+                scanf("%d", &id);
+
+                k = -1;
+                for(i=0 ; i < n ; i++){
+                    if(arr[i].id == id){
+                        k = i;
+                        break;
+                    }
+                }
+
+                if(k != -1){
+                    do{
+                        printf("Enter the new manager's name: ");
+                        scanf(" %s", arr[k].manager_name);
+
+                        ok = 1;
+                        for(j=0 ; arr[k].manager_name[j] != '\0' ; j++){
+                            if(arr[k].manager_name[j] >= '0' && arr[k].manager_name[j] <= '9'){
+                                printf("Invalid manager name !! \n");
+                                ok = 0;
+                                break;
+                            }
+                        }
+                    }while(ok == 0);
+
+                    printf("Manager changed successfully...\n");
+                }else{
+                    printf("Warehouse not found.\n");
+                }
+
+                printf("\n");
+                break;
+
+            case 6:
+                printf("=============================================\n");
+                printf("=|  Number of warehouses in a city         |=\n");
+                printf("=============================================\n");
+
+                printf("Enter the city: ");
+                scanf(" %[^\n]", city_in);
+
+                k = 0;
+                for(i=0 ; i < n ; i++){
+                    if(strcmp(city_in, arr[i].city)==0){
+                        k++;
+                    }
+                }
+
+                printf("Number of warehouses in %s: %d\n", city_in, k);
+
+                printf("\n");
+                break;
+
+            case 7:
+                printf("=============================================\n");
+                printf("=|  Warehouses where all shelves < threshold|=\n");
+                printf("=============================================\n");
+
+                printf("Enter the max threshold: ");
+                scanf("%d", &threshold);
+
+                k = 0;
+                for(i=0 ; i < n ; i++){
+                    ok = 1;
+                    for(j=0 ; j < arr[i].shelf_count ; j++){
+                        if(arr[i].products[j] >= threshold){
+                            ok = 0;
+                            break;
+                        }
+                    }
+
+                    if(ok == 1){
+                        printf("ID: %d\nCity: %s\nProduct type: %s\nNumber of shelves: %d\nProducts: ",
+                               arr[i].id, arr[i].city, arr[i].product_type, arr[i].shelf_count);
+                        for(j=0 ; j < arr[i].shelf_count ; j++){
+                            printf("%d ", arr[i].products[j]);
+                        }
+                        printf("\nManager: %s\n", arr[i].manager_name);
+                        printf("---------------------------------------------\n");
+                        k = k + 1;
+                    }
+                }
+
+                if(k == 0){
+                    printf("No matching warehouse.\n");
+                }
+
+                printf("\n");
+                break;
+
+            case 8:
+                printf("=============================================\n");
+                printf("===|  Delete the first empty warehouse   |===\n");
+                printf("=============================================\n");
+
+                k = -1;
+                for(i=0 ; i < n && k == -1 ; i++){
+                    sum = 0;
+                    for(j=0 ; j < arr[i].shelf_count ; j++){
+                        sum = sum + arr[i].products[j];
+                    }
+                    if(sum == 0){
+                        k = i;
+                    }
+                }
+
+                if(k == -1){
+                    printf("No empty warehouse.\n");
+                }else{
+                    for(i=k ; i < n-1 ; i++){
+                        arr[i] = arr[i+1];
+                    }
+                    n--;
+                    printf("First empty warehouse deleted successfully...\n");
+                }
+
+                printf("\n");
+                break;
+
+            case 0:
+                printf("Quitting...   :(\n");
+                break;
+        }
+
+    }while(choice != 0);
+
+    return 0;
+}
