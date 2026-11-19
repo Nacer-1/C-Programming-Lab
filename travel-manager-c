@@ -1,0 +1,315 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+typedef struct {
+    int day;
+    int month;
+    int year;
+} date;
+
+typedef struct {
+    int destination;
+    date trip_date;
+} trip;
+
+typedef struct {
+    int id;
+    char last_name[50];
+    char first_name[50];
+    int trip_count;
+    trip trips[100];
+} client;
+
+int main() {
+
+    client clients[50];
+
+    int i, j, k, c, counter, choice, n = 0;
+    int invalid, best, id, max, found;
+    trip temp;
+
+    do {
+        do {
+            printf("\n=====| Trip Menu |=====\n");
+            printf("[1].Fill an array of n clients.\n");
+            printf("[2].Display the clients array.\n");
+            printf("[3].Sort each client's trips by date, descending order.\n");
+            printf("[4].Display the most loyal traveler.\n");
+            printf("[5].Display a traveler's most requested destination by ID.\n");
+            printf("[0].Quit.\n");
+            printf("-----------------------------\n");
+            printf("Enter your choice: ");
+            scanf("%d", &choice);
+
+        } while (choice > 5 || choice < 0);
+
+        switch (choice) {
+
+            case 1:
+
+                printf("Enter number of clients: ");
+                scanf("%d", &n);
+
+                if (n < 1 || n > 50) {
+                    printf("Invalid number of clients!\n");
+                    n = 0;
+                    break;
+                }
+
+                for (i = 0; i < n; i++) {
+
+                    printf("\nClient N[%d]\n", i + 1);
+
+                    do {
+                        printf("Enter client ID: ");
+                        scanf("%d", &clients[i].id);
+
+                        if (clients[i].id > 99999999 ||
+                            clients[i].id < 10000000) {
+                            printf("ID must be 8 digits!\n");
+                        }
+
+                    } while (clients[i].id > 99999999 ||
+                             clients[i].id < 10000000);
+
+                    do {
+                        invalid = 0;
+                        printf("Enter client last name: ");
+                        scanf("%49s", clients[i].last_name);
+
+                        for (j = 0; j < (int)strlen(clients[i].last_name); j++) {
+                            if (!isalpha((unsigned char)clients[i].last_name[j])) {
+                                invalid = 1;
+                                printf("Invalid last name!\n");
+                                break;
+                            }
+                        }
+
+                    } while (invalid == 1);
+
+                    do {
+                        invalid = 0;
+                        printf("Enter client first name: ");
+                        scanf("%49s", clients[i].first_name);
+
+                        for (j = 0; j < (int)strlen(clients[i].first_name); j++) {
+                            if (!isalpha((unsigned char)clients[i].first_name[j])) {
+                                invalid = 1;
+                                printf("Invalid first name!\n");
+                                break;
+                            }
+                        }
+
+                    } while (invalid == 1);
+
+                    do {
+                        printf("Enter number of trips: ");
+                        scanf("%d", &clients[i].trip_count);
+
+                    } while (clients[i].trip_count < 0 ||
+                             clients[i].trip_count > 100);
+
+                    for (j = 0; j < clients[i].trip_count; j++) {
+
+                        do {
+                            printf("Enter destination of trip N[%d]: ", j + 1);
+                            scanf("%d", &clients[i].trips[j].destination);
+
+                        } while (clients[i].trips[j].destination <= 0);
+
+                        do {
+                            printf("Enter date of trip N[%d]\n", j + 1);
+
+                            printf("Day: ");
+                            scanf("%d", &clients[i].trips[j].trip_date.day);
+
+                            printf("Month: ");
+                            scanf("%d", &clients[i].trips[j].trip_date.month);
+
+                            printf("Year: ");
+                            scanf("%d", &clients[i].trips[j].trip_date.year);
+
+                        } while (
+                            clients[i].trips[j].trip_date.day < 1 ||
+                            clients[i].trips[j].trip_date.day > 31 ||
+                            clients[i].trips[j].trip_date.month < 1 ||
+                            clients[i].trips[j].trip_date.month > 12 ||
+                            clients[i].trips[j].trip_date.year < 1
+                        );
+                    }
+                }
+
+                printf("Filling complete!\n");
+                break;
+
+            case 2:
+
+                if (n == 0) {
+                    printf("Fill the clients array first!\n");
+                    break;
+                }
+
+                for (i = 0; i < n; i++) {
+
+                    printf("\n========== CLIENT %d ==========\n", i + 1);
+
+                    printf("ID: %d\n", clients[i].id);
+                    printf("Last name: %s\n", clients[i].last_name);
+                    printf("First name: %s\n", clients[i].first_name);
+                    printf("Number of trips: %d\n", clients[i].trip_count);
+
+                    for (j = 0; j < clients[i].trip_count; j++) {
+
+                        printf("\nTrip N[%d]\n", j + 1);
+
+                        printf("Destination: %d\n", clients[i].trips[j].destination);
+                        printf("Day: %d\n", clients[i].trips[j].trip_date.day);
+                        printf("Month: %d\n", clients[i].trips[j].trip_date.month);
+                        printf("Year: %d\n", clients[i].trips[j].trip_date.year);
+                    }
+                }
+
+                break;
+
+            case 3:
+
+                if (n == 0) {
+                    printf("Fill the clients array first!\n");
+                    break;
+                }
+
+                for (c = 0; c < n; c++) {
+
+                    for (i = 0; i < clients[c].trip_count - 1; i++) {
+
+                        best = i;
+
+                        for (j = i + 1; j < clients[c].trip_count; j++) {
+
+                            if (
+                                clients[c].trips[j].trip_date.year >
+                                clients[c].trips[best].trip_date.year
+
+                                ||
+
+                                (clients[c].trips[j].trip_date.year ==
+                                 clients[c].trips[best].trip_date.year
+                                 &&
+                                 clients[c].trips[j].trip_date.month >
+                                 clients[c].trips[best].trip_date.month)
+
+                                ||
+
+                                (clients[c].trips[j].trip_date.year ==
+                                 clients[c].trips[best].trip_date.year
+                                 &&
+                                 clients[c].trips[j].trip_date.month ==
+                                 clients[c].trips[best].trip_date.month
+                                 &&
+                                 clients[c].trips[j].trip_date.day >
+                                 clients[c].trips[best].trip_date.day)
+                            ) {
+                                best = j;
+                            }
+                        }
+
+                        temp = clients[c].trips[i];
+                        clients[c].trips[i] = clients[c].trips[best];
+                        clients[c].trips[best] = temp;
+                    }
+                }
+
+                printf("Sorting completed successfully!\n");
+                break;
+
+            case 4:
+
+                if (n == 0) {
+                    printf("Fill the clients array first!\n");
+                    break;
+                }
+
+                best = 0;
+
+                for (i = 1; i < n; i++) {
+
+                    if (clients[i].trip_count > clients[best].trip_count) {
+                        best = i;
+                    }
+                }
+
+                printf("\n===== MOST LOYAL TRAVELER =====\n");
+                printf("ID: %d\n", clients[best].id);
+                printf("Last name: %s\n", clients[best].last_name);
+                printf("First name: %s\n", clients[best].first_name);
+                printf("Number of trips: %d\n", clients[best].trip_count);
+
+                break;
+
+            case 5:
+
+                if (n == 0) {
+                    printf("Fill the clients array first!\n");
+                    break;
+                }
+
+                printf("Enter the traveler's ID: ");
+                scanf("%d", &id);
+
+                found = 0;
+
+                for (i = 0; i < n; i++) {
+
+                    if (clients[i].id == id) {
+
+                        found = 1;
+                        max = 0;
+                        best = 0;
+
+                        for (j = 0; j < clients[i].trip_count; j++) {
+
+                            counter = 0;
+
+                            for (k = 0; k < clients[i].trip_count; k++) {
+
+                                if (clients[i].trips[j].destination ==
+                                    clients[i].trips[k].destination) {
+                                    counter++;
+                                }
+                            }
+
+                            if (counter > max) {
+                                max = counter;
+                                best = j;
+                            }
+                        }
+
+                        if (clients[i].trip_count == 0) {
+                            printf("This traveler has no trips!\n");
+                        }
+                        else {
+                            printf("\n===== MOST REQUESTED DESTINATION =====\n");
+                            printf("ID: %d\n", id);
+                            printf("Destination: %d\n", clients[i].trips[best].destination);
+                            printf("Number of requests: %d\n", max);
+                        }
+
+                        break;
+                    }
+                }
+
+                if (found == 0) {
+                    printf("ID not found!\n");
+                }
+
+                break;
+        }
+
+    } while (choice != 0);
+
+    printf("Goodbye!\n");
+
+    return 0;
+}
